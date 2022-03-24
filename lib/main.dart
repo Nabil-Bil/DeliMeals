@@ -1,18 +1,57 @@
+import 'package:delimeals/dummy_data.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
 import './screens/meal_item_screen.dart';
+import 'models/meal.dart';
 import 'screens/category_meals_screen.dart';
 import 'screens/navigation_screen.dart';
 import 'screens/filters_screen.dart';
 
 main() async {
-  await Future.delayed(const Duration(seconds: 1,milliseconds: 500));
-  return runApp(const MyApp());
+  return runApp(ChangeNotifierProvider(
+    create: (context) => Favorites(),
+    child: const MyApp(),
+  ));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  Map<String, bool> filters = {
+    'gluten': false,
+    'lactose': false,
+    'vegetarian': false,
+    'vegan': false,
+  };
+
+  List<Meal> _availableMeals = DUMMY_MEALS;
+
+  void _setFilters(Map<String, bool> newFilters) {
+    filters = newFilters;
+    _availableMeals = DUMMY_MEALS.where((element) {
+      if (filters['gluten']! && !element.isGlutenFree) {
+        return false;
+      }
+      if (filters['lactose']! && !element.isLactoseFree) {
+        return false;
+      }
+      if (filters['vegetarian']! && !element.isVegetarian) {
+        return false;
+      }
+      if (filters['vegan']! && !element.isVegan) {
+        return false;
+      }
+      return true;
+    }).toList();
+  }
+
   @override
   Widget build(BuildContext context) {
     return (MaterialApp(
@@ -48,10 +87,31 @@ class MyApp extends StatelessWidget {
       ),
       routes: {
         '/': (context) => const NavigationScreen(),
-        CategoryMealsScreen.routeName: (context) => const CategoryMealsScreen(),
+        CategoryMealsScreen.routeName: (context) => CategoryMealsScreen(
+              availableMeals: _availableMeals,
+            ),
         MealItemScreen.routeName: (context) => const MealItemScreen(),
-        FilterScreen.routeName: (context) => const FilterScreen(),
+        FilterScreen.routeName: (context) =>
+            FilterScreen(handler: _setFilters, filters: filters),
       },
     ));
+  }
+}
+
+class Favorites extends ChangeNotifier {
+  final List<Meal> _mealList = [];
+
+  void addMeal(Meal meal) {
+    _mealList.add(meal);
+    notifyListeners();
+  }
+
+  void removeMeal(Meal meal) {
+    _mealList.remove(meal);
+    notifyListeners();
+  }
+
+  List<Meal> get getFavoriteMeals {
+    return _mealList;
   }
 }

@@ -1,24 +1,23 @@
 import 'package:delimeals/widgets/meal_item.dart';
 import 'package:flutter/material.dart';
 import '../models/category.dart';
-import '../dummy_data.dart';
+import '../models/meal.dart';
 
 class CategoryMealsScreen extends StatelessWidget {
+  final List<Meal> availableMeals;
   static const routeName = '/categoriy-meals';
-  const CategoryMealsScreen({
-    Key? key,
-  }) : super(key: key);
+  const CategoryMealsScreen({Key? key, required this.availableMeals})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final category = ModalRoute.of(context)?.settings.arguments as Category;
-    final categoryMeals = DUMMY_MEALS
+    final categoryMeals = availableMeals
         // ignore: iterable_contains_unrelated_type
         .where((meal) => meal.categories.contains(category.id))
         .toList();
 
     return Scaffold(
-       
         appBar: AppBar(
           title: Text(category.title),
         ),

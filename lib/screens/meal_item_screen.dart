@@ -1,12 +1,20 @@
+import 'package:delimeals/main.dart';
 import 'package:delimeals/models/meal.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../dummy_data.dart';
 
-class MealItemScreen extends StatelessWidget {
+class MealItemScreen extends StatefulWidget {
   const MealItemScreen({Key? key}) : super(key: key);
 
   static String routeName = '/meal-item';
 
+  @override
+  State<MealItemScreen> createState() => _MealItemScreenState();
+}
+
+class _MealItemScreenState extends State<MealItemScreen> {
+  bool _isFavorites = false;
   @override
   Widget build(BuildContext context) {
     final routeArg = ModalRoute.of(context)?.settings.arguments;
@@ -16,9 +24,19 @@ class MealItemScreen extends StatelessWidget {
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        child: const Icon(
-          Icons.star_outline,
+        onPressed: () {
+          setState(() {
+            if (meal.isFavorite == false) {
+              meal.isFavorite = true;
+              Provider.of<Favorites>(context, listen: false).addMeal(meal);
+            } else {
+              meal.isFavorite = false;
+              Provider.of<Favorites>(context, listen: false).removeMeal(meal);
+            }
+          });
+        },
+        child: Icon(
+          meal.isFavorite ? Icons.star_sharp : Icons.star_outline,
           color: Colors.black,
         ),
       ),

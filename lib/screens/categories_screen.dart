@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import '../dummy_data.dart';
 
 class CategoriesScreen extends StatefulWidget {
-  const CategoriesScreen({Key? key}) : super(key: key);
+  
+  const CategoriesScreen({Key? key,}) : super(key: key);
 
   @override
   State<CategoriesScreen> createState() => _CategoriesScreenState();
