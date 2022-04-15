@@ -2,6 +2,7 @@ import 'package:delimeals/dummy_data.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import './screens/meal_item_screen.dart';
 import 'models/meal.dart';
@@ -53,6 +54,36 @@ class _MyAppState extends State<MyApp> {
   }
 
   @override
+  void initState() {
+    SharedPreferences.getInstance().then((value) {
+      filters = {
+        'gluten': value.getBool('gluten') ?? false,
+        'lactose': value.getBool('lactose') ?? false,
+        'vegetarian': value.getBool('vegetarian') ?? false,
+        'vegan': value.getBool('key') ?? false,
+      };
+    }).then((value) {
+      _availableMeals = DUMMY_MEALS.where((element) {
+        if (filters['gluten']! && !element.isGlutenFree) {
+          return false;
+        }
+        if (filters['lactose']! && !element.isLactoseFree) {
+          return false;
+        }
+        if (filters['vegetarian']! && !element.isVegetarian) {
+          return false;
+        }
+        if (filters['vegan']! && !element.isVegan) {
+          return false;
+        }
+        return true;
+      }).toList();
+    });
+
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return (MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -101,13 +132,15 @@ class _MyAppState extends State<MyApp> {
 class Favorites extends ChangeNotifier {
   final List<Meal> _mealList = [];
 
-  void addMeal(Meal meal) {
+  Future<void> addMeal(Meal meal) async {
     _mealList.add(meal);
+
     notifyListeners();
   }
 
-  void removeMeal(Meal meal) {
+  Future<void> removeMeal(Meal meal) async {
     _mealList.remove(meal);
+
     notifyListeners();
   }
 

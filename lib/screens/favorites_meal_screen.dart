@@ -21,12 +21,13 @@ class _FavoritesMealScreenState extends State<FavoritesMealScreen> {
     return ListView.builder(
       itemBuilder: (context, index) {
         return MealItem(
-            id: listMeal[index].id,
-            title: listMeal[index].title,
-            imageUrl: listMeal[index].imageUrl,
-            duration: listMeal[index].duration,
-            affordability: listMeal[index].affordability,
-            complexity: listMeal[index].complexity);
+          id: listMeal[index].id,
+          title: listMeal[index].title,
+          imageUrl: listMeal[index].imageUrl,
+          duration: listMeal[index].duration,
+          affordability: listMeal[index].affordability,
+          complexity: listMeal[index].complexity,
+        );
       },
       itemCount: listMeal.length,
     );

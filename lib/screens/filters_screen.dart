@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../widgets/custom_drawer.dart';
 
 class FilterScreen extends StatefulWidget {
@@ -13,13 +14,13 @@ class FilterScreen extends StatefulWidget {
 }
 
 class _FilterScreenState extends State<FilterScreen> {
-  bool _glutenFree = false;
+  late bool _glutenFree;
 
-  bool _vegetarian = false;
+  late bool _vegetarian;
 
-  bool _vegan = false;
+  late bool _vegan;
 
-  bool _lactoseFree = false;
+  late bool _lactoseFree;
 
   @override
   void initState() {
@@ -69,6 +70,9 @@ class _FilterScreenState extends State<FilterScreen> {
                   onChanged: (val) {
                     setState(() {
                       _glutenFree = val;
+
+                      SharedPreferences.getInstance().then(
+                          (value) => value.setBool('gluten', _glutenFree));
                     });
                   },
                   title: const Text("Gluten-free"),
@@ -80,6 +84,8 @@ class _FilterScreenState extends State<FilterScreen> {
                   onChanged: (val) {
                     setState(() {
                       _vegetarian = val;
+                      SharedPreferences.getInstance().then(
+                          (value) => value.setBool('vegetarian', _vegetarian));
                     });
                   },
                   title: const Text("Vegetarian"),
@@ -91,6 +97,8 @@ class _FilterScreenState extends State<FilterScreen> {
                   onChanged: (val) {
                     setState(() {
                       _vegan = val;
+                      SharedPreferences.getInstance()
+                          .then((value) => value.setBool('vegan', _vegan));
                     });
                   },
                   title: const Text("Vegan"),
@@ -102,6 +110,8 @@ class _FilterScreenState extends State<FilterScreen> {
                   onChanged: (val) {
                     setState(() {
                       _lactoseFree = val;
+                      SharedPreferences.getInstance().then(
+                          (value) => value.setBool('lactose', _lactoseFree));
                     });
                   },
                   title: const Text("Lactose-free"),

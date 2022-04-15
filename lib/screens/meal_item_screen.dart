@@ -14,7 +14,6 @@ class MealItemScreen extends StatefulWidget {
 }
 
 class _MealItemScreenState extends State<MealItemScreen> {
-  bool _isFavorites = false;
   @override
   Widget build(BuildContext context) {
     final routeArg = ModalRoute.of(context)?.settings.arguments;
